@@ -11,14 +11,27 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:todoList_BloC/domain/model/todo.dart';
 import 'package:todoList_BloC/presentation/todo_cubit.dart';
 
-class TodoView extends StatelessWidget {
+class TodoView extends StatefulWidget {
   const TodoView({super.key});
 
+  @override
+  State<TodoView> createState() => _TodoViewState();
+}
+
+class _TodoViewState extends State<TodoView> {
+
+  final textController = TextEditingController();
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+
+  }
   // show dialog box for user to type
   void _showAddTodoBox(BuildContext context) {
     final todoCubit = context.read<TodoCubit>();
-    final textController = TextEditingController();
-
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -43,7 +56,6 @@ class TodoView extends StatelessWidget {
     );
   }
 
-
   @override
   Widget build(BuildContext context) {
 
@@ -51,34 +63,41 @@ class TodoView extends StatelessWidget {
     final todoCubit = context.read<TodoCubit>();
 
     return Scaffold(
-      floatingActionButton: FloatingActionButton(onPressed: () => _showAddTodoBox(context)),
+      floatingActionButton: FloatingActionButton(
+        child: const Icon(Icons.add),
+          onPressed: () => _showAddTodoBox(context)
+      ),
       body: BlocBuilder<TodoCubit, List<Todo>>(
         builder: (context, todos) {
           // List View
-          return ListView.builder(
-            itemCount: todos.length,
-            itemBuilder: (context, index) {
-              // get individual todo from todos list
-              final todo = todos[index];
+          return Padding(
+            padding: const EdgeInsets.only(top: 28.0),
+            child: ListView.builder(
+              itemCount: todos.length,
+              itemBuilder: (context, index) {
+                // get individual todo from todos list
 
-              // List Tile UI
-              return ListTile(
-                // text
-                title: Text(todo.text),
+                final todo = todos[index];
 
-                // check box
-                leading: Checkbox(
-                  value: todo.isCompleted,
-                  onChanged: (value) => todoCubit.toggleTodoCompletion(todo),
-                ), // Checkbox
+                // List Tile UI
+                return ListTile(
+                  // text
+                  title: Text(todo.text),
 
-                // delete button
-                trailing: IconButton(
-                  icon: const Icon(Icons.cancel),
-                  onPressed: () => todoCubit.deleteTodo(todo),
-                ), // IconButton
-              ); // ListTile
-            },
+                  // check box
+                  leading: Checkbox(
+                    value: todo.isCompleted,
+                    onChanged: (value) => todoCubit.toggleTodoCompletion(todo),
+                  ), // Checkbox
+
+                  // delete button
+                  trailing: IconButton(
+                    icon: const Icon(Icons.cancel),
+                    onPressed: () => todoCubit.deleteTodo(todo),
+                  ), // IconButton
+                ); // ListTile
+              },
+            ),
           ); // ListView.builder
 
         },

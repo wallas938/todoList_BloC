@@ -32,7 +32,8 @@ class IsarTodoRepository implements TodoRepository {
     final isarTodo = TodoIsar.fromDomain(todo);
 
     // so that we can store it in our isar db
-    db.writeTxn(() => db.todoIsars.put(isarTodo));
+    await db.writeTxn(() => db.todoIsars.put(isarTodo));
+
   }
 
   @override
@@ -47,8 +48,6 @@ class IsarTodoRepository implements TodoRepository {
   @override
   Future<void> deleteTodo(Todo todo) async {
 
-    await db.todoIsars.where().idEqualTo(todo.id).deleteFirst();
-
-    // await db.writeTxn(() => db.todoIsars.delete(todo.id));
+    await db.writeTxn(() => db.todoIsars.delete(todo.id));
   }
 }
